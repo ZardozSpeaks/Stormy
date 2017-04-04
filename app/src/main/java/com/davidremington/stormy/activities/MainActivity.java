@@ -11,7 +11,7 @@ import okhttp3.OkHttpClient;
 public class MainActivity extends AppCompatActivity {
 
     private static Gson gson = new Gson();
-    private static OkHttpClient okHttpClient = new OkHttpClient();
+    private static OkHttpClient client = new OkHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
