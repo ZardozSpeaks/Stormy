@@ -6,9 +6,9 @@ import com.davidremington.stormy.models.Forecast;
 import com.davidremington.stormy.utils.Constants;
 import com.davidremington.stormy.utils.NullForecastError;
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -37,8 +37,8 @@ public class ForecastService {
         return instance;
     }
 
-    public ArrayList<Forecast> getForecast(double latitude, double longitude) throws NullForecastError {
-        ArrayList<Forecast> ret = new ArrayList<>();
+    public Forecast[] getForecast(double latitude, double longitude) throws NullForecastError {
+        final Forecast[] forecast = new Forecast[1];
         Request request = new Request.Builder()
                 .url(getForecastUrl(latitude, longitude))
                 .build();
@@ -53,19 +53,35 @@ public class ForecastService {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     if(response.isSuccessful()){
-                        Log.v(TAG, response.body().string());
-                        //TODO: add code to map to objects here
+                        String forecastData = response.body().string();
+                        Log.v(TAG, forecastData);
+                        forecast[0] = gson.fromJson(forecastData, Forecast.class);
                     }
                 } catch (IOException e) {
+                    Log.e(TAG, "Exception: ", e);
+                } catch (JsonParseException e) {
                     Log.e(TAG, "Exception: ", e);
                 }
             }
         });
 
-        return ret;
+        waitOnResponse(forecast);
+        return forecast;
     }
 
     private String getForecastUrl(double latitude, double longitude) {
         return String.format("%s/%s/%s,%s", ROOT_FORECAST_URL, API_KEY, latitude, longitude);
+    }
+
+    private void waitOnResponse(Forecast[] forecast) {
+        int counter = 0;
+        while(forecast[0] == null && counter < 10){
+            try {
+                Thread.sleep(1000);
+                counter ++;
+            } catch (InterruptedException e){
+                Log.e(TAG, "Exception: ", e);
+            }
+        }
     }
 }
