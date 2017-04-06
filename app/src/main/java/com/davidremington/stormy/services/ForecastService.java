@@ -1,9 +1,8 @@
-package com.davidremington.stormy.activities.services;
+package com.davidremington.stormy.stormy.services;
 
-
-import com.davidremington.stormy.BuildConfig;
-import com.davidremington.stormy.activities.models.Forecast;
-import com.davidremington.stormy.activities.utils.NullForecastError;
+import com.davidremington.stormy.stormy.models.Forecast;
+import com.davidremington.stormy.stormy.utils.Constants;
+import com.davidremington.stormy.stormy.utils.NullForecastError;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class ForecastService {
     private static ForecastService instance = null;
 
     private static final String ROOT_FORECAST_URL = "https://api.darksky.net/forecast";
-    private static final String API_KEY = BuildConfig.API_KEY;
+    private static final String API_KEY = Constants.API_KEY;
 
     private ForecastService() {
         //method to prevent instantiation
