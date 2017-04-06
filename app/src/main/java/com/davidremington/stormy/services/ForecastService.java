@@ -1,13 +1,17 @@
-package com.davidremington.stormy.stormy.services;
+package com.davidremington.stormy.services;
 
-import com.davidremington.stormy.stormy.models.Forecast;
-import com.davidremington.stormy.stormy.utils.Constants;
-import com.davidremington.stormy.stormy.utils.NullForecastError;
+import android.util.Log;
+
+import com.davidremington.stormy.models.Forecast;
+import com.davidremington.stormy.utils.Constants;
+import com.davidremington.stormy.utils.NullForecastError;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -19,6 +23,7 @@ public class ForecastService {
     private static ForecastService instance = null;
 
     private static final String ROOT_FORECAST_URL = "https://api.darksky.net/forecast";
+    private static final String TAG = ForecastService.class.getSimpleName();
     private static final String API_KEY = Constants.API_KEY;
 
     private ForecastService() {
@@ -34,17 +39,29 @@ public class ForecastService {
 
     public ArrayList<Forecast> getForecast(double latitude, double longitude) throws NullForecastError {
         ArrayList<Forecast> ret = new ArrayList<>();
-        Response response;
         Request request = new Request.Builder()
                 .url(getForecastUrl(latitude, longitude))
                 .build();
         Call call = client.newCall(request);
-        try {
-            response = call.execute();
-        } catch (java.io.IOException e) {
-            throw new NullForecastError();
-        }
-        System.out.println(response);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if(response.isSuccessful()){
+                        Log.v(TAG, response.body().string());
+                        //TODO: add code to map to objects here
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "Exception: ", e);
+                }
+            }
+        });
+
         return ret;
     }
 
