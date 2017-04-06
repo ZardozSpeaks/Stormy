@@ -1,9 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.davidremington.stormy.activities.MainActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="50dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+        <EditText android:id="@+id/locationEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="125dp"
+            android:gravity="center"
+            android:hint="@string/location_hint"/>
+
+        <TextView android:id="@+id/errorTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingTop="50dp"/>
+    </LinearLayout>
+    <Button
+        android:id="@+id/getLocationButton"
+        android:layout_width="fill_parent"
+        android:layout_height="55dp"
+        android:text="@string/location_button_text"
+        android:textSize="16sp"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@color/colorText"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="getForecast"/>
+</RelativeLayout>
