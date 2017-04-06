@@ -1,4 +1,4 @@
-package com.davidremington.stormy.stormy.utils;
+package com.davidremington.stormy.utils;
 
 
 public class NullForecastError extends Throwable {
