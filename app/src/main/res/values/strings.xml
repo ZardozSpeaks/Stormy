@@ -3,4 +3,7 @@
     <string name="location_hint">Enter the name of your city</string>
     <string name="location_button_text">Get Forecast</string>
     <string name="no_location_found">Location not found, please try again</string>
+    <string name="no_results">No results for that Location, please choose another</string>
+    <string name="error_title">Oops! Sorry!</string>
+    <string name="positive_alert_text">OK</string>
 </resources>
