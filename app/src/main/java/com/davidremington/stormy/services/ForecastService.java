@@ -1,8 +1,15 @@
 package com.davidremington.stormy.services;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.davidremington.stormy.models.Forecast;
+import com.davidremington.stormy.utils.ApplicationContextProvider;
 import com.davidremington.stormy.utils.Constants;
 import com.davidremington.stormy.utils.NullForecastError;
+
+import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -34,12 +41,23 @@ public class ForecastService {
                 .url(getForecastUrl(latitude, longitude))
                 .build();
         Call call = sClient.newCall(request);
-        call.enqueue(callback);
+        if(isNetworkAvailable()) {
+            call.enqueue(callback);
+        } else {
+            callback.onFailure(call, new IOException());
+        }
     }
 
 
     private String getForecastUrl(double latitude, double longitude) {
         return String.format("%s/%s/%s,%s", ROOT_FORECAST_URL, API_KEY, latitude, longitude);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager manager = (ConnectivityManager)
+                ApplicationContextProvider.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 
 }

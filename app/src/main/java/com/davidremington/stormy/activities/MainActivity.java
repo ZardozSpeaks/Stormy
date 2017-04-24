@@ -1,5 +1,6 @@
 package com.davidremington.stormy.activities;
 
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.davidremington.stormy.fragments.AlertDialogFragment;
 import com.davidremington.stormy.models.Forecast;
 import com.davidremington.stormy.services.ForecastService;
+import com.davidremington.stormy.utils.ApplicationContextProvider;
 import com.davidremington.stormy.utils.NullForecastError;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
@@ -28,6 +30,7 @@ import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,23 +38,23 @@ public class MainActivity extends AppCompatActivity {
     private static Gson sGson;
     private Forecast mForcast;
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-
     @Bind(R.id.getLocationButton) Button locationButton;
     @Bind(R.id.locationEditText) EditText locationText;
-    @Bind(R.id.errorTextView) TextView errorTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Context context = getApplicationContext();
+        ApplicationContextProvider.setContext(context);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Timber.plant(new Timber.DebugTree());
         sGson = new Gson();
         sForecastService = ForecastService.getInstance();
     }
 
     @OnClick(R.id.getLocationButton)
-    public void getForecast(View view) {
+    public void getForecast() {
         LatLng coordinates = getLocationCoordinates();
         try {
             sForecastService.getForecast(coordinates.latitude, coordinates.longitude, new Callback() {
@@ -65,22 +68,19 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             if(response.isSuccessful()){
                                 String forecastData = response.body().string();
-                                Log.v(TAG, forecastData);
+                                Timber.v(forecastData);
                                 mForcast = sGson.fromJson(forecastData, Forecast.class);
                             } else {
                                 alertUserOfError();
                             }
-                        } catch (IOException e) {
-                            Log.e(TAG, "Exception: ", e);
-                        } catch (JsonParseException e) {
-                            Log.e(TAG, "Exception: ", e);
+                        } catch (IOException | JsonParseException e) {
+                            Timber.e(e);
                         }
                     }
             });
-        } catch (NullForecastError e) {
-            errorTextView.setText(getString(R.string.no_location_found));
-        } catch (NullPointerException e) {
-            errorTextView.setText(getString(R.string.no_results));
+        } catch (NullForecastError | NullPointerException e) {
+            Timber.e(e);
+            alertUserOfError();
         }
     }
 
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         LatLng point;
 
         try {
-            addresses = coder.getFromLocationName(locationText.getText().toString(), 5);
+            addresses = coder.getFromLocationName(locationText.getText().toString().toLowerCase(), 5);
             if(addresses == null) {
                 return null;
             }
@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
             point = new LatLng(location.getLatitude(),
                               (location.getLongitude()));
         } catch (IOException e) {
+            alertUserOfError();
             return null;
         }
         return point;
