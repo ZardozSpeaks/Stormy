@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.davidremington.stormy.activities.BuildConfig;
 import com.davidremington.stormy.models.Forecast;
 import com.davidremington.stormy.utils.ApplicationContextProvider;
 import com.davidremington.stormy.utils.Constants;
@@ -15,10 +16,12 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor.Level;
 
 public class ForecastService {
 
-    private static OkHttpClient sClient = new OkHttpClient();
+    private static OkHttpClient sClient = setupClient();
     private static ForecastService sInstance = null;
 
     private static final String ROOT_FORECAST_URL = "https://api.darksky.net/forecast";
@@ -58,6 +61,16 @@ public class ForecastService {
                 ApplicationContextProvider.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    private static OkHttpClient setupClient() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        if(BuildConfig.DEBUG) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(Level.BODY);
+            builder.networkInterceptors().add(logging);
+        }
+        return builder.build();
     }
 
 }
