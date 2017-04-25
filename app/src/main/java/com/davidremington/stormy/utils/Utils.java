@@ -52,7 +52,7 @@ public class Utils {
                 iconId = R.mipmap.cloudy_night;
                 break;
             default:
-                iconId = 0;
+                iconId = R.mipmap.clear_day;
                 Timber.e(String.format("unknown iconName %s passed to method", iconName));
                 break;
         }
