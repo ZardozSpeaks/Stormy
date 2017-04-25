@@ -5,11 +5,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.davidremington.stormy.fragments.AlertDialogFragment;
 import com.davidremington.stormy.models.Forecast;
@@ -48,9 +45,11 @@ public class MainActivity extends AppCompatActivity {
         ApplicationContextProvider.setContext(context);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Timber.plant(new Timber.DebugTree());
         sGson = new Gson();
         sForecastService = ForecastService.getInstance();
+        if(BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     @OnClick(R.id.getLocationButton)
