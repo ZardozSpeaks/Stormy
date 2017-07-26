@@ -1,6 +1,7 @@
 package com.davidremington.stormy.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
@@ -9,12 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.davidremington.stormy.fragments.AlertDialogFragment;
-import com.davidremington.stormy.models.Forecast;
 import com.davidremington.stormy.services.ForecastService;
 import com.davidremington.stormy.utils.ApplicationContextProvider;
 import com.davidremington.stormy.utils.NullForecastError;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 
@@ -29,11 +28,11 @@ import okhttp3.Callback;
 import okhttp3.Response;
 import timber.log.Timber;
 
+import static com.davidremington.stormy.utils.ApplicationContextProvider.getContext;
+
 public class MainActivity extends AppCompatActivity {
 
     private static ForecastService sForecastService;
-    private static Gson sGson;
-    private Forecast mForcast;
 
     @Bind(R.id.getLocationButton) Button locationButton;
     @Bind(R.id.locationEditText) EditText locationText;
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         ApplicationContextProvider.setContext(context);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        sGson = new Gson();
         sForecastService = ForecastService.getInstance();
         if(BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                             if(response.isSuccessful()){
                                 String forecastData = response.body().string();
                                 Timber.v(forecastData);
-                                mForcast = sGson.fromJson(forecastData, Forecast.class);
+                                sendDataToForecastActivity(MainActivity.this, forecastData);
                             } else {
                                 alertUserOfError();
                             }
@@ -81,6 +79,15 @@ public class MainActivity extends AppCompatActivity {
             Timber.e(e);
             alertUserOfError();
         }
+    }
+
+
+    private void sendDataToForecastActivity(Context context, String forecastData){
+        Intent intent = new Intent(context, ForecastActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("forecastData", forecastData);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void alertUserOfError() {
