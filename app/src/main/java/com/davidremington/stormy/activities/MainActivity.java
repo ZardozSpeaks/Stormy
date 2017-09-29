@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.davidremington.stormy.BuildConfig;
+import com.davidremington.stormy.R;
 import com.davidremington.stormy.fragments.AlertDialogFragment;
 import com.davidremington.stormy.services.ForecastService;
 import com.davidremington.stormy.utils.ApplicationContextProvider;
@@ -27,8 +29,6 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import timber.log.Timber;
-
-import static com.davidremington.stormy.utils.ApplicationContextProvider.getContext;
 
 public class MainActivity extends AppCompatActivity {
 

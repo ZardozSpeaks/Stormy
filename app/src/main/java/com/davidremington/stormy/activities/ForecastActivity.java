@@ -4,6 +4,7 @@ package com.davidremington.stormy.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.davidremington.stormy.R;
 import com.davidremington.stormy.models.Forecast;
 import com.google.gson.Gson;
 

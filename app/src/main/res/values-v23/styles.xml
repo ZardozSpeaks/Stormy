@@ -9,8 +9,11 @@
     </style>
 
     <style name="AppTheme.ActionBar.Transparent" parent="AppTheme">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <!--include this line for darker action bar text if a lighter background color is chosen-->
+        <!--<item name="android:windowLightStatusBar">true</item>-->
     </style>
 
 </resources>

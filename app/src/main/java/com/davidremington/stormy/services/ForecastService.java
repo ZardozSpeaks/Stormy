@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.davidremington.stormy.activities.BuildConfig;
+import com.davidremington.stormy.BuildConfig;
 import com.davidremington.stormy.models.Forecast;
 import com.davidremington.stormy.utils.ApplicationContextProvider;
 import com.davidremington.stormy.utils.Constants;

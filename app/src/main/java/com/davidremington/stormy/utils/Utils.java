@@ -1,7 +1,7 @@
 package com.davidremington.stormy.utils;
 
 
-import com.davidremington.stormy.activities.R;
+import com.davidremington.stormy.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

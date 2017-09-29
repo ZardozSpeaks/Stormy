@@ -8,7 +8,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.davidremington.stormy.activities.R;
+import com.davidremington.stormy.R;
 
 public class AlertDialogFragment extends DialogFragment{
 
