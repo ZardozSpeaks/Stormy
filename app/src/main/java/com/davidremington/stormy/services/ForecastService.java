@@ -8,7 +8,7 @@ import com.davidremington.stormy.BuildConfig;
 import com.davidremington.stormy.models.Forecast;
 import com.davidremington.stormy.utils.ApplicationContextProvider;
 import com.davidremington.stormy.utils.Constants;
-import com.davidremington.stormy.utils.NullForecastError;
+import com.davidremington.stormy.exceptions.NullForecastException;
 
 import java.io.IOException;
 
@@ -38,7 +38,7 @@ public class ForecastService {
         return sInstance;
     }
 
-    public void getForecast(double latitude, double longitude, Callback callback) throws NullForecastError {
+    public void getForecast(double latitude, double longitude, Callback callback) throws NullForecastException {
         final Forecast[] forecast = new Forecast[1];
         Request request = new Request.Builder()
                 .url(getForecastUrl(latitude, longitude))

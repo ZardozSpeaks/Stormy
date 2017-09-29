@@ -14,7 +14,7 @@ import com.davidremington.stormy.R;
 import com.davidremington.stormy.fragments.AlertDialogFragment;
 import com.davidremington.stormy.services.ForecastService;
 import com.davidremington.stormy.utils.ApplicationContextProvider;
-import com.davidremington.stormy.utils.NullForecastError;
+import com.davidremington.stormy.exceptions.NullForecastException;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonParseException;
 
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
             });
-        } catch (NullForecastError | NullPointerException e) {
+        } catch (NullForecastException | NullPointerException e) {
             Timber.e(e);
             alertUserOfError();
         }
