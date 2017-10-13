@@ -3,6 +3,8 @@ package com.davidremington.stormy.utils;
 
 import com.davidremington.stormy.R;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -12,10 +14,18 @@ import timber.log.Timber;
 
 public class Utils {
 
-    public static String getFormattedTime(Long timestamp, String timezone) {
+    public static String getFormattedTime(Long timestamp, String timezone) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("h:mm a", Locale.US);
         formatter.setTimeZone(TimeZone.getTimeZone(timezone));
-        return formatter.format(new Date(timestamp * 1000));
+        return formatter.format((timestamp * 1000));
+    }
+
+    public static int roundToInt(Double value) {
+        return (int) Math.round(value);
+    }
+
+    public static Double decimalToPercentage(Double value) {
+        return value * 100;
     }
 
     public static int getIconId(String iconName) {

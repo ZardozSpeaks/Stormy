@@ -6,4 +6,12 @@
     <string name="no_results">No results for that Location, please choose another</string>
     <string name="error_title">Oops! Sorry!</string>
     <string name="positive_alert_text">OK</string>
+    <string name="activity_forecast_time_placeholder">At 5:18AM it will be</string>
+    <string name="activity_forecast_temp_placeholder">100</string>
+    <string name="activity_forecast_location_placeholder">Alcatraz Island, CA</string>
+    <string name="activity_forecast_humidity_label">HUMIDITY</string>
+    <string name="activity_forecast_humidity_placeholder">0.88</string>
+    <string name="activity_forecast_precip_label">RAIN/SNOW?</string>
+    <string name="activity_forecast_precip_placeholder">100</string>
+    <string name="activity_forecast_summary_placeholder">Stormy with a chance of meatballs</string>
 </resources>

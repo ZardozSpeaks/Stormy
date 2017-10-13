@@ -18,12 +18,12 @@ import com.davidremington.stormy.exceptions.NullForecastException;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonParseException;
 
-
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -33,9 +33,10 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity {
 
     private static ForecastService sForecastService;
+    private String location;
 
-    @Bind(R.id.getLocationButton) Button locationButton;
-    @Bind(R.id.locationEditText) EditText locationText;
+    @BindView(R.id.getLocationButton) Button getLocationButton;
+    @BindView(R.id.locationEditText) EditText locationText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         sForecastService = ForecastService.getInstance();
-        if(BuildConfig.DEBUG) {
+        if(BuildConfig.DEBUG && Timber.forest().isEmpty()) {
             Timber.plant(new Timber.DebugTree());
         }
     }
@@ -70,12 +71,14 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 alertUserOfError();
                             }
-                        } catch (IOException | JsonParseException e) {
+                        } catch ( IOException
+                                | JsonParseException e) {
                             Timber.e(e);
                         }
                     }
             });
-        } catch (NullForecastException | NullPointerException e) {
+        } catch ( NullForecastException
+                | NullPointerException e) {
             Timber.e(e);
             alertUserOfError();
         }
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(context, ForecastActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("forecastData", forecastData);
+        bundle.putString("locality", location);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -105,9 +109,10 @@ public class MainActivity extends AppCompatActivity {
             if(addresses == null) {
                 return null;
             }
-            Address location = addresses.get(0);
-            point = new LatLng(location.getLatitude(),
-                              (location.getLongitude()));
+            Address city = addresses.get(0);
+            location = String.format("%s, %s", city.getLocality(), city.getAdminArea());
+            point = new LatLng(city.getLatitude(),
+                              (city.getLongitude()));
         } catch (IOException e) {
             alertUserOfError();
             return null;

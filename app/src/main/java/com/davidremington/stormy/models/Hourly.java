@@ -1,7 +1,7 @@
 package com.davidremington.stormy.models;
 
 
-class Hourly {
+public class Hourly {
     public Long time;
     public String summary;
     public String icon;
