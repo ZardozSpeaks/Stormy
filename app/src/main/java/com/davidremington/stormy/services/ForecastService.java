@@ -58,7 +58,7 @@ public class ForecastService {
 
     private boolean isNetworkAvailable() {
         ConnectivityManager manager = (ConnectivityManager)
-                ApplicationContextProvider.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                ApplicationContextProvider.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }

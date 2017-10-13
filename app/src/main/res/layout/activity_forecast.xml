@@ -128,4 +128,13 @@
         android:text="@string/activity_forecast_summary_placeholder"
         android:textColor="@color/colorText"
         android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/refreshImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        app:srcCompat="@mipmap/refresh" />
 </RelativeLayout>

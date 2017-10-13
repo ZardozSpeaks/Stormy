@@ -2,8 +2,6 @@ package com.davidremington.stormy.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -11,15 +9,18 @@ import android.widget.EditText;
 
 import com.davidremington.stormy.BuildConfig;
 import com.davidremington.stormy.R;
+import com.davidremington.stormy.exceptions.LocationNotFoundException;
 import com.davidremington.stormy.fragments.AlertDialogFragment;
+import com.davidremington.stormy.models.Location;
 import com.davidremington.stormy.services.ForecastService;
+import com.davidremington.stormy.services.GeoCoderService;
 import com.davidremington.stormy.utils.ApplicationContextProvider;
 import com.davidremington.stormy.exceptions.NullForecastException;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 import java.io.IOException;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,8 +33,10 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Location location;
+
     private static ForecastService sForecastService;
-    private String location;
+    private static Gson sGson = new Gson();
 
     @BindView(R.id.getLocationButton) Button getLocationButton;
     @BindView(R.id.locationEditText) EditText locationText;
@@ -53,9 +56,13 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.getLocationButton)
     public void getForecast() {
-        LatLng coordinates = getLocationCoordinates();
         try {
-            sForecastService.getForecast(coordinates.latitude, coordinates.longitude, new Callback() {
+             location = GeoCoderService.getLocation(
+                    locationText.getText().toString().toLowerCase(),
+                    this);
+            if (location != null) {
+                LatLng coordinates = location.point;
+                sForecastService.getForecast(coordinates.latitude, coordinates.longitude, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         alertUserOfError();
@@ -64,21 +71,25 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         try {
-                            if(response.isSuccessful()){
+                            if (response.isSuccessful()) {
                                 String forecastData = response.body().string();
                                 Timber.v(forecastData);
                                 sendDataToForecastActivity(MainActivity.this, forecastData);
                             } else {
                                 alertUserOfError();
                             }
-                        } catch ( IOException
+                        } catch (IOException
                                 | JsonParseException e) {
                             Timber.e(e);
                         }
                     }
-            });
+                });
+            } else {
+                alertUserOfError();
+            }
         } catch ( NullForecastException
-                | NullPointerException e) {
+                | NullPointerException
+                | LocationNotFoundException e) {
             Timber.e(e);
             alertUserOfError();
         }
@@ -89,34 +100,14 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(context, ForecastActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("forecastData", forecastData);
-        bundle.putString("locality", location);
+        bundle.putString("location", sGson.toJson(location));
         intent.putExtras(bundle);
         startActivity(intent);
     }
-
     private void alertUserOfError() {
         AlertDialogFragment dialog = new AlertDialogFragment();
         dialog.show(getFragmentManager(), "error_dialog");
     }
 
-    private LatLng getLocationCoordinates() {
-        Geocoder coder = new Geocoder(this);
-        List<Address> addresses;
-        LatLng point;
 
-        try {
-            addresses = coder.getFromLocationName(locationText.getText().toString().toLowerCase(), 5);
-            if(addresses == null) {
-                return null;
-            }
-            Address city = addresses.get(0);
-            location = String.format("%s, %s", city.getLocality(), city.getAdminArea());
-            point = new LatLng(city.getLatitude(),
-                              (city.getLongitude()));
-        } catch (IOException e) {
-            alertUserOfError();
-            return null;
-        }
-        return point;
-    }
 }

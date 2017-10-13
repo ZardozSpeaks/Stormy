@@ -14,7 +14,7 @@ import timber.log.Timber;
 
 public class Utils {
 
-    public static String getFormattedTime(Long timestamp, String timezone) throws ParseException {
+    public static String getFormattedTime(Long timestamp, String timezone) {
         SimpleDateFormat formatter = new SimpleDateFormat("h:mm a", Locale.US);
         formatter.setTimeZone(TimeZone.getTimeZone(timezone));
         return formatter.format((timestamp * 1000));

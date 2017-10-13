@@ -19,7 +19,7 @@ public class ApplicationContextProvider {
      *
      * @return application context
      */
-    public static Context getContext() {
+    public static Context getAppContext() {
         return mContext;
     }
 }
