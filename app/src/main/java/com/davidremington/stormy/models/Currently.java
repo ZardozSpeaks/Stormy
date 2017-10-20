@@ -1,9 +1,12 @@
 package com.davidremington.stormy.models;
 
 
-public class Data {
+public class Currently {
     public Long time;
     public String summary;
+    public String icon;
+    public Integer nearestStormDistance;
+    public Integer nearestStormBearing;
     public Double precipIntensity;
     public Double precipIntensityError;
     public Double precipProbability;
@@ -12,12 +15,12 @@ public class Data {
     public Double apparentTemperature;
     public Double dewPoint;
     public Double humidity;
-    public Double pressure;
     public Double windSpeed;
     public Double windGust;
     public Integer windBearing;
+    public Double visablity;
     public Double cloudCover;
-    public Integer uvIndex;
-    public Integer visiblity;
+    public Double pressure;
     public Double ozone;
+    public Integer uvIndex;
 }

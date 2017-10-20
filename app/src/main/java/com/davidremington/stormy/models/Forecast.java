@@ -6,5 +6,7 @@ public class Forecast {
     public Double longitude;
     public String timezone;
     public Integer offset;
-    public Hourly currently;
+    public Currently currently;
+    public Hourly hourly;
+    public Minutely minutely;
 }

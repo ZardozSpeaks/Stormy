@@ -4,7 +4,9 @@ package com.davidremington.stormy.activities;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -13,7 +15,7 @@ import com.davidremington.stormy.exceptions.LocationNotFoundException;
 import com.davidremington.stormy.exceptions.NullForecastException;
 import com.davidremington.stormy.fragments.AlertDialogFragment;
 import com.davidremington.stormy.models.Forecast;
-import com.davidremington.stormy.models.Hourly;
+import com.davidremington.stormy.models.Currently;
 import com.davidremington.stormy.models.Location;
 import com.davidremington.stormy.services.ForecastService;
 import com.davidremington.stormy.services.GeoCoderService;
@@ -48,7 +50,7 @@ public class ForecastActivity extends AppCompatActivity {
     @BindView(R.id.precipValue) TextView precipValue;
     @BindView(R.id.summaryTextView) TextView summaryTextView;
     @BindView(R.id.refreshImageView) ImageView refreshImageView;
-
+    @BindView(R.id.progressBar) ProgressBar progressBar;
 
     private Forecast forecast;
     private Location location;
@@ -63,6 +65,7 @@ public class ForecastActivity extends AppCompatActivity {
         String locationJSON = extras.getString("location");
         setContentView(R.layout.activity_forecast);
         ButterKnife.bind(this);
+        progressBar.setVisibility(View.INVISIBLE);
         forecast = sGson.fromJson(forecastJSON, Forecast.class);
         location = sGson.fromJson(locationJSON, Location.class);
         sForecastService = ForecastService.getInstance();
@@ -70,7 +73,7 @@ public class ForecastActivity extends AppCompatActivity {
     }
 
     private void updateDisplay() {
-        Hourly current = forecast.currently;
+        Currently current = forecast.currently;
         Double precipPercentage = Utils.decimalToPercentage(current.precipProbability);
         Drawable drawable = getResources().getDrawable(Utils.getIconId(current.icon));
         int temperature = Utils.roundToInt(current.temperature);
@@ -87,6 +90,7 @@ public class ForecastActivity extends AppCompatActivity {
     @OnClick(R.id.refreshImageView)
     public void refreshInformation() {
         try {
+            toggleRefresh();
             String locationText = Preferences.getSettingsParam(CACHED_LOCATION);
             location = GeoCoderService.getLocation(
                     locationText,
@@ -97,6 +101,7 @@ public class ForecastActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         alertUserOfError();
+                        toggleRefresh();
                     }
 
                     @Override
@@ -106,24 +111,39 @@ public class ForecastActivity extends AppCompatActivity {
                                 String forecastData = response.body().string();
                                 Timber.v(forecastData);
                                 forecast = sGson.fromJson(forecastData, Forecast.class);
+                                runOnUiThread(() -> toggleRefresh());
                                 runOnUiThread(() -> updateDisplay());
                             } else {
                                 alertUserOfError();
+                                runOnUiThread(() -> toggleRefresh());
                             }
                         } catch (IOException
                                 | JsonParseException e) {
                             Timber.e(e);
+                            runOnUiThread(() -> toggleRefresh());
                         }
                     }
                 });
             } else {
                 alertUserOfError();
+                toggleRefresh();
             }
         } catch ( NullForecastException
                 | NullPointerException
                 | LocationNotFoundException e) {
             Timber.e(e);
             alertUserOfError();
+            toggleRefresh();
+        }
+    }
+
+    private void toggleRefresh() {
+        if (progressBar.getVisibility() == View.INVISIBLE) {
+            progressBar.setVisibility(View.VISIBLE);
+            refreshImageView.setVisibility(View.INVISIBLE);
+        } else {
+            progressBar.setVisibility(View.INVISIBLE);
+            refreshImageView.setVisibility(View.VISIBLE);
         }
     }
 
