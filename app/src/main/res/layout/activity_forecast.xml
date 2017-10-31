@@ -171,6 +171,7 @@
             android:layout_weight="1"
             android:background="#40ffffff"
             android:text="@string/activity_forecast_daily_btn_txt"
-            android:textColor="@color/colorText" />
+            android:textColor="@color/colorText"
+            android:layout_marginStart="2dp"/>
     </LinearLayout>
 </RelativeLayout>
