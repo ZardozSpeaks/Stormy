@@ -11,7 +11,7 @@
     <style name="AppTheme.ActionBar.Transparent" parent="AppTheme">
         <item name="android:layout_marginTop">0dp</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:statusBarColor">#f9d34c</item>
         <!--include this line for darker action bar text if a lighter background color is chosen-->
         <!--<item name="android:windowLightStatusBar">true</item>-->
     </style>

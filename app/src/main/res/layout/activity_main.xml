@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.davidremington.stormy.activities.MainActivity"
-    android:background="@color/colorBackground">
+    android:background="@drawable/bg_gradient">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/colorBackground"
+        android:background="#40ffffff"
         android:text="@string/location_button_text"
         android:textColor="@color/colorText"
         android:textSize="16sp" />
