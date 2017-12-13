@@ -16,4 +16,5 @@
     <string name="activity_forecast_summary_placeholder">Getting current weather…</string>
     <string name="activity_forecast_daily_btn_txt">7 DAY</string>
     <string name="activity_forecast_hourly_btn_txt">HOURLY</string>
+    <string name="title_activity_daily_forecast">DailyForecastActivity</string>
 </resources>
